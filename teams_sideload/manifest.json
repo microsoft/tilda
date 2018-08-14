@@ -1,0 +1,41 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+{
+    "$schema": "https://statics.teams.microsoft.com/sdk/v1.0/manifest/MicrosoftTeams.schema.json", 
+    "manifestVersion": "1.0",
+    "version": "1.0.0",
+    "id": "a6a689dd-91b4-4af5-b012-6c6b077c02b8",
+    "packageName": "com.microsoft.tilda",
+    "developer": {
+        "name": "Microsoft",
+        "websiteUrl": "https://www.microsoft.com",
+        "privacyUrl": "https://www.microsoft.com/privacy",
+        "termsOfUseUrl": "https://www.microsoft.com/termsofuse"
+    },
+    "name": {
+        "short": "Tilda"
+    },
+    "description": {
+        "short": "Collaborative tagging of Slack conversations for making sense of group chat.",
+        "full": "Companion tools from the academic paper 'Making Sense of Group Chat through Collaborative Tagging and Summarization' by Amy X. Zhang and Justin Cranshaw, from CHI 2019."
+    },
+    "icons": {
+        "outline": "contoso20x20.png",
+        "color": "contoso96x96.png"
+    },
+    "accentColor": "#60A18E",
+    "bots": [
+        {
+            "botId": "a6a689dd-91b4-4af5-b012-6c6b077c02b8",
+            "scopes": [
+                "team",
+                "personal"
+            ]
+        }
+    ],
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ]
+}

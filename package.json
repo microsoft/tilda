@@ -1,0 +1,18 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+{
+  "name": "Tilda",
+  "version": "1.0.0",
+  "description": "Companion tools from the academic paper 'Making Sense of Group Chat through Collaborative Tagging and Summarization' by Amy X. Zhang and Justin Cranshaw, from CHI 2019.",
+  "main": "app.js",
+  "author": "Microsoft",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/client": "^3.10.0",
+    "botbuilder": "^3.8.3",
+    "dotenv": "^4.0.0",
+    "mongodb": "^2.2.30",
+    "restify": "^4.3.0"
+  }
+}
