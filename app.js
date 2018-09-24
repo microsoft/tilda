@@ -11,8 +11,8 @@ var https_options = {};
 
 var fs = require('fs');
 https_options = {
-	key: fs.readFileSync('/etc/letsencrypt/keys/0000_key-certbot.pem'),
-    certificate: fs.readFileSync('/etc/letsencrypt/csr/0000_csr-certbot.pem'),
+	key: fs.readFileSync('/etc/letsencrypt/live/tildachat.com/privkey.pem'),
+    certificate: fs.readFileSync('/etc/letsencrypt/live/tildachat.com/fullchain.pem'),
 };
 
 
