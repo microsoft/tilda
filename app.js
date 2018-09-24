@@ -6,6 +6,17 @@ require('dotenv').config();
 var restify = require('restify');
 var builder = require('botbuilder');
 
+
+var https_options = {};
+
+var fs = require('fs');
+https_options = {
+	key: fs.readFileSync('/etc/letsencrypt/keys/0000_key-certbot.pem'),
+    certificate: fs.readFileSync('/etc/letsencrypt/csr/0000_csr-certbot.pem'),
+};
+
+
+
 var async = require('async');
 
 var CronJob = require('cron').CronJob;
@@ -25,7 +36,7 @@ var SlackClient = require('@slack/client').WebClient;
 var slack = new SlackClient(process.env.BOT_USER_OAUTH_ACCESS_TOKEN);
 
 // Setup Restify Server
-var server = restify.createServer();
+var server = restify.createServer(https_options);
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
