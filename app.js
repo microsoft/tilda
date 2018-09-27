@@ -93,9 +93,8 @@ server.get('/api/oauth', function (req, res, next) {
 });
 
 server.post('/api/events', function (req, res, next) {
-	console.log(req.body);
-	if (req.body.event.type == "url_verification") {
-		var text = req.body.event.challenge;
+	if (req.body.type && req.body.type == "url_verification") {
+		var text = req.body.challenge;
 		res.writeHead(200, {
 					  'Content-Length': Buffer.byteLength(text),
 					  'Content-Type': 'text/plan'
@@ -103,8 +102,7 @@ server.post('/api/events', function (req, res, next) {
 		res.write(text);
 		res.end();
 		next();
-	}
-	else if (req.body.event.type == "reaction_added") {
+	} else if (req.body.event.type == "reaction_added") {
 		post_proactive_dialog_action(req.body);
 	} else if (req.body.event.type == "star_added") {
 		var channel_id = req.body.event.item.channel;
