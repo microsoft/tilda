@@ -3082,7 +3082,9 @@ function delete_current_summary(team_id, channel_id) {
 	DB.collection("currentsummary").remove(data);
 }
 
-var bot = new builder.UniversalBot(connector, function (session) {
+var bot = new builder.UniversalBot(connector, {
+	storage: new builder.MemoryBotStorage()
+	}, function (session) {
 	
 	try {
 		
