@@ -69,6 +69,7 @@ server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
+	redirect_uri="https://tildachat.com:3978",
 			function(err, result) {
 				if (!err) {
 					DB.collection("oauthtokens").update(
