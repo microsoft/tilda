@@ -67,9 +67,10 @@ server.post('/api/messages', connector.listen());
 
 server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
+	console.log(req.params);
 	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
-	"https://tildachat.com:3978",
+	"https://tildachat.com:3978/api/oauth",
 			function(err, result) {
 				if (!err) {
 					DB.collection("oauthtokens").update(
