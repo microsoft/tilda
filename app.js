@@ -93,6 +93,7 @@ server.get('/api/oauth', function (req, res, next) {
 });
 
 server.post('/api/events', function (req, res, next) {
+	console.log(req.body);
 	if (req.body.event.type == "url_verification") {
 		var text = req.body.event.challenge;
 		res.writeHead(200, {
