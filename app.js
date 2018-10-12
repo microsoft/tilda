@@ -111,11 +111,7 @@ server.post('/api/events', function (req, res, next) {
 	} else if (req.body.event.type == "star_added") {
 		var channel_id = req.body.event.item.channel;
 		var team_id = req.body.team_id;
-		
-		DB.collection("channeladdress").findOne({channel: channel_id},
-				function(err, result) {
-					if (!err) {
-						if (result) {
+
 							
 							DB.collection("currentsummary").findOne({channel_id: channel_id},
 									function(err, r2) {
@@ -135,7 +131,7 @@ server.post('/api/events', function (req, res, next) {
 																	 count: 15,	
 																	},
 																	function(err2, result2) {
-																		send_star(err2, result2, r2, req, result, channel_id)
+																		send_star(err2, result2, r2, req, channel_id)
 																	});
 															
 															} else if (channel_id.startsWith('G')) {
@@ -145,7 +141,7 @@ server.post('/api/events', function (req, res, next) {
 																		 count: 15,	
 																		},
 																		function(err2, result2) {
-																			send_star(err2, result2, r2, req, result, channel_id)
+																			send_star(err2, result2, r2, req, channel_id)
 																		});
 																	
 															} else if (channel_id.startsWith('D')) {
@@ -155,13 +151,12 @@ server.post('/api/events', function (req, res, next) {
 																		 count: 15,	
 																		},
 																		function(err2, result2) {
-																			send_star(err2, result2, r2, req, result, channel_id)
+																			send_star(err2, result2, r2, req, channel_id)
 																		});
 																	
 															}
 														}}});
 										}});
-						}}});
 	
 		res.json(req.body);
 		next();
@@ -183,7 +178,7 @@ server.post('/api/events', function (req, res, next) {
 	
 });
 
-function send_star(err2, result2, r2, req, result, channel_id) {
+function send_star(err2, result2, r2, req, channel_id) {
 	if (result2.messages.length < 15) {
 		if (r2) {
 			var message = req.body.event.item.message.text;
@@ -196,12 +191,15 @@ function send_star(err2, result2, r2, req, result, channel_id) {
 				text += '"_ -<@' + req.body.event.item.message.user + '>';
 			}
 			var obj = post_instructions(false, text, '');
-			obj = {'slack': obj};
+		
+			slack.chat.postMessage(channel_id, 
+				obj.text, {attachments: obj.attachments}, 
+				function(err, r) {
+					console.log(err);
+				}
+			});
 			
-			var msg = new builder.Message().address(result.address);
-			msg.textLocale('en-US');
-			msg.sourceEvent(obj);
-			bot.send(msg);
+			
 			send_tilda_post(text, channel_id);
 		} else {
 			var new_text = "_Seems like an important conversation is happening. " +
@@ -209,12 +207,15 @@ function send_star(err2, result2, r2, req, result, channel_id) {
 				
 			var obj2 = post_instructions(false, new_text,
 					'Start a conversation with :start: ');
-			obj2 = {'slack': obj2};
 			
-			var msg2 = new builder.Message().address(result.address);
-			msg2.textLocale('en-US');
-			msg2.sourceEvent(obj2);
-			bot.send(msg2);
+			
+			slack.chat.postMessage(channel_id, 
+				obj2.text, {attachments: obj2.attachments}, 
+				function(err, r) {
+					console.log(err);
+				}
+			});
+			
 			send_tilda_post(new_text, channel_id);
 		}
 	}
