@@ -167,15 +167,16 @@ server.post('/api/events', function (req, res, next) {
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
-		var message = req.body;
-		DB.collection("session").insertOne(message, function(err, res) {
-					if (err) {
-						console.log(err);
-					}
-				});
-				
-		res.json(req.body);
-		next();
+		// var message = req.body;
+// 		DB.collection("session").insertOne(message, function(err, res) {
+// 					if (err) {
+// 						console.log(err);
+// 					}
+// 				});
+// 				
+// 		res.json(req.body);
+// 		next();
+		res.redirect('https://slack.botframework.com/api/Events/TildaBot', next);
 	}
 	
 	
