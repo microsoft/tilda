@@ -4,7 +4,6 @@
 require('dotenv').config();
 
 var restify = require('restify');
-var builder = require('botbuilder');
 
 
 var https_options = {};
@@ -56,11 +55,6 @@ var emojis = {
 
 var types = ['action', 'info', 'decision', 'idea', 'question', 'answer'];
 
-// Create chat connector for communicating with the Bot Framework Service
-var connector = new builder.ChatConnector({
-    appId: process.env.MICROSOFT_APP_ID,
-    appPassword: process.env.MICROSOFT_APP_PASSWORD
-});
 
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
@@ -161,20 +155,16 @@ server.post('/api/events', function (req, res, next) {
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
-		// var message = req.body;
-// 		DB.collection("session").insertOne(message, function(err, res) {
-// 					if (err) {
-// 						console.log(err);
-// 					}
-// 				});
-// 				
-// 		res.json(req.body);
-// 		next();
-		console.log(req);
-		
-		res.redirect('https://slack.botframework.com/api/Events/TildaBot', next);
-	}
-	
+		var message = req.body;
+		DB.collection("session").insertOne(message, function(err, res) {
+					if (err) {
+						console.log(err);
+					}
+				});
+				
+		res.json(req.body);
+		next();
+		}
 	
 });
 
@@ -2001,27 +1991,30 @@ function add_item_dialog_card(summary, id, text, message_text, old, msg_time) {
 }
 
 function post_to_channel(summary, channel, text, obj) {
-	DB.collection("channeladdress").findOne({channel: channel},
-			function(err, result) {
-				if (!err) {
-					if (result) {
-						var msg = new builder.Message().address(result.address);
-						msg.textLocale('en-US');
-						if (obj) {
-							msg.sourceEvent(obj);
-						} else {
-							msg.text(text);
-						}
-						bot.send(msg);
+	
+	
+	if (obj) {
+	      slack.chat.postMessage(channel, 
+				obj.slack.text, {attachments: obj.slack.attachments}, 
+				function(err, r) {
+					console.log(err);
+				}
+			);
+	} else {
+		slack.chat.postMessage(channel, 
+				text, {attachments: {}},
+				function(err, r) {
+					console.log(err);
+				}
+			);
+	}
 						
 						if (obj) {
 							send_tilda_post(obj.slack.text, channel); 
 						} else {
 							send_tilda_post(text, channel);
 						}
-					}
-				}
-		});
+					
 }
 
 
@@ -2102,11 +2095,19 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 				var msg = new builder.Message(session);
 				var current_time = new Date().valueOf();
 				var msg_time = new Date(parseFloat(session.message.sourceEvent.SlackMessage.event_time) * 1000.0).valueOf();
+				
 				var obj = add_item_dialog_card(current_summary, name + '-' + current_time, text, new_text, false, msg_time);
-				obj.response_type = "in_channel";
-				obj = {'slack': obj};
-				msg.sourceEvent(obj);
-				session.send(msg);
+				
+			
+				
+			slack.chat.postMessage(channel, 
+				obj.slack.text, {attachments: obj.slack.attachments}, 
+				function(err, r) {
+					console.log(err);
+				}
+			);
+				
+				
 			}
 		}
 	} else if (name == "tag" && text.indexOf('/~add') < 0) {
@@ -2147,6 +2148,7 @@ function create_tag_card(results) {
 	} else {
 		obj = {
 				'text': 'No existing tags in this channel. Add one with `/~addtag [tag]`.',
+				'attachments': [],
 		};
 	} 
 	return obj;
@@ -3084,13 +3086,6 @@ function start_summary(session) {
 	};
 }
 
-function channel_to_address(channel, address) {
-	var data = {'channel': channel,
-			'address': address};
-	DB.collection("channeladdress").update(
-			{channel: channel},
-			data, {upsert: true});
-}
 
 function update_current_summary(team_id, channel_id, current_summary) {
 	current_summary.last_updated = new Date();
@@ -3111,22 +3106,6 @@ function delete_current_summary(team_id, channel_id) {
 			'channel_id': channel_id};
 	DB.collection("currentsummary").remove(data);
 }
-
-var inMemoryStorage = new builder.MemoryBotStorage();
-
-var bot = new builder.UniversalBot(connector, function (session) {
-	console.log(session.message);
-	
-	var channel_info = session.message.address.conversation.id;
-	var channel_id = channel_info.split(':')[2]
-		
-	console.log(channel_id);
-	
-	channel_to_address(channel_id,
-	session.message.address);
-	
-}).set('storage', inMemoryStorage);
-
 
 function initDB() {
 	DB.createCollection('currentsummary', function(err, collection){});
