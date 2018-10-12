@@ -69,14 +69,10 @@ server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	console.log(req.params);
 	
-	console.log(process.env.SLACK_CLIENT_ID);
-	console.log(process.env.SLACK_CLIENT_SECRET);
-	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
 	"https://tildachat.com:8080/api/oauth",
 			function(err, result) {
 				if (!err) {
-					console.log('here');
 					DB.collection("oauthtokens").update(
 							{team_id: result.team_id},
 							result, {upsert: true});
@@ -92,9 +88,6 @@ server.get('/api/oauth', function (req, res, next) {
 					res.write(text);
 					res.end();
 					next();
-				}
-				else {
-					console.log(err);
 				}
 			});
 	
@@ -168,6 +161,26 @@ server.post('/api/events', function (req, res, next) {
 														}}});
 										}});
 						}}});
+	} else if (req.body.event.type == "message") {
+		console.log('HERE');
+		
+		DB.collection("channeladdress").findOne({channel: channel_id},
+				function(err, result) {
+					if (!err) {
+						if (result) {
+		var obj2 = post_instructions(false, new_text,
+					'Start a conversation with :start: ');
+			obj2 = {'slack': obj2};
+			
+			var msg2 = new builder.Message().address(result.address);
+			msg2.textLocale('en-US');
+			msg2.sourceEvent(obj2);
+			bot.send(msg2);
+			send_tilda_post(new_text, channel_id);
+			
+			}
+			}
+			}
 	}
 	
 	res.json(req.body);
@@ -3110,278 +3123,7 @@ var inMemoryStorage = new builder.MemoryBotStorage();
 
 var bot = new builder.UniversalBot(connector, function (session) {
 
-	console.log(session.message);
-	
-	try {
-		var channel_info = session.message.address.conversation.id;
-		var channel_id = channel_info.split(':')[2]
-		
-		console.log(channel_id)
-		
-		session.message.channel_id = channel_id;
-		session.message.message_id = session.message.sourceEvent.SlackMessage.event_time;
-		session.message.post_date = new Date(session.message.timestamp);
-		
-	channel_to_address(channel_id,
-			session.message.address);
-	
-	var team_id = session.message.sourceEvent.SlackMessage.team_id; 
-	
-	var text = session.message.text;
-	
-	DB.collection("currentsummary").findOne({team_id: team_id,
-		channel_id: channel_id},
-			function(err, result) {
-				current_summary = result;
-				
-				var start_meeting = (text.indexOf('/~start') == 0) || (text.indexOf('~start') == 0) || (text.indexOf(':start:') >= 0);
-				if (start_meeting) {
-					start_meeting = 0;
-				} else {
-					start_meeting = -1;
-				}
-				var end_meeting = (text.indexOf('/~end') == 0) || (text.indexOf('~end') == 0) || (text.indexOf(':end:') >= 0);
-				if (end_meeting) {
-					end_meeting = 0;
-				} else {
-					end_meeting = -1;
-				}
-				
-				if (start_meeting >= 0) {
-					if (current_summary) {
-						var new_text = 'Ended prior conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
-						var obj = end_meeting_dialog(new_text, new Date().valueOf());
-						obj.response_type = "in_channel";
-						obj = {'slack': obj};
-						
-						var msg = new builder.Message().address(session.message.address);
-						msg.textLocale('en-US');
-						msg.sourceEvent(obj);
-						bot.send(msg);
-						send_tilda_post(new_text, channel_id);
-						
-						current_summary.end_message = session.message.sourceEvent.SlackMessage.event_time;
-						current_summary.meet_end = new Date(session.message.timestamp);
-						end_existing_summary(current_summary);
-						
-						delete_current_summary(team_id, channel_id);
-					}
-					current_summary = start_summary(session);
-					
-					if (text.indexOf('/~start') < 0 || text.indexOf(':start:') >= 0) {
-						var obj2 = post_instructions(false, 'Started a conversation :start:  :small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down:', '');
-						obj2.response_type = "in_channel";
-						obj2 = {'slack': obj2};
-						var msg2 = new builder.Message().address(session.message.address);
-						msg2.textLocale('en-US');
-						msg2.sourceEvent(obj2);
-						bot.send(msg2);
-						send_tilda_post(obj2.slack.text, channel_id);
-					}
-					update_current_summary(team_id, channel_id, current_summary);
-					
-				} else if (end_meeting >= 0) {
-					if (current_summary) {
-						current_summary.end_message = session.message.sourceEvent.SlackMessage.event_time;
-						current_summary.meet_end = new Date(session.message.timestamp);
-						end_existing_summary(current_summary);
-						
-						if (text.indexOf('/~end') < 0 || text.indexOf(':end:') >= 0) {
-							var text2 = 'Ended conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
-							var obj3 = end_meeting_dialog(text2, new Date().valueOf());
-							obj3.response_type = "in_channel";
-							obj3 = {'slack': obj3};
-							var msg3 = new builder.Message().address(session.message.address);
-							msg3.textLocale('en-US');
-							msg3.sourceEvent(obj3);
-							bot.send(msg3);
-							send_tilda_post(text2, channel_id);
-						}
-						delete_current_summary(team_id, channel_id);
-					}
-				}
-				
-				if (start_meeting < 0 && end_meeting < 0) {
-					var info = (text.indexOf('~addinfo') == 0) || (text.indexOf('/~addinfo') == 0);
-					if (info) {
-						info = 0;
-					} else {
-						info = -1;
-					}
-					var action = (text.indexOf('~addaction') == 0) || (text.indexOf('/~addaction') == 0);
-					if (action) {
-						action = 0;
-					} else {
-						action = -1;
-					}
-					var topic = (text.indexOf('~addtopic') == 0) || (text.indexOf('/~addtopic') == 0);
-					if (topic) {
-						topic = 0;
-					} else {
-						topic = -1;
-					}
-					var idea = (text.indexOf('~addidea') == 0) || (text.indexOf('/~addidea') == 0);
-					if (idea) {
-						idea = 0;
-					} else {
-						idea = -1;
-					}
-					var question = (text.indexOf('~addquestion') == 0) || (text.indexOf('/~addquestion') == 0);
-					if (question) {
-						question = 0;
-					} else {
-						question = -1;
-					}
-					var answer = (text.indexOf('~addanswer') == 0) || (text.indexOf('/~addanswer') == 0);
-					if (answer) {
-						answer = 0;
-					} else {
-						answer = -1;
-					}
-					var decision = (text.indexOf('~adddecision') == 0) || (text.indexOf('/~adddecision') == 0);
-					if (decision) {
-						decision = 0;
-					} else {
-						decision = -1;
-					}
-					var tag = (text.indexOf('~addtag') == 0) || (text.indexOf('/~addtag') == 0);
-					if (tag) {
-						tag = 0;
-					} else {
-						tag = -1;
-					}
-					
-					var info2 = (text.indexOf(':information_source:') >= 0) || (text.indexOf(':info:') >= 0);
-					if (info2) {
-						info2 = 0;
-					} else {
-						info2 = -1;
-					}
-					var action2 = (text.indexOf(':boom:') >= 0) || (text.indexOf(':action:') >= 0);
-					if (action2) {
-						action2 = 0;
-					} else {
-						action2 = -1;
-					}
-					var topic2 = (text.indexOf(':top:') >= 0) || (text.indexOf(':topic:') >= 0);
-					if (topic2) {
-						topic2 = 0;
-					} else {
-						topic2 = -1;
-					}
-					var idea2 = (text.indexOf(':bulb:') >= 0) || (text.indexOf(':idea:') >= 0);
-					if (idea2) {
-						idea2 = 0;
-					} else {
-						idea2 = -1;
-					}
-					var question2 = text.indexOf(':question:');
-					var answer2 = (text.indexOf(':exclamation:') >= 0) || (text.indexOf(':answer:') >= 0);
-					if (answer2) {
-						answer2 = 0;
-					} else {
-						answer2 = -1;
-					}
-					var decision2 = text.indexOf(':decision:');
-		
-					if (info >= 0 || action >= 0 || topic >= 0 || idea >= 0 || 
-							question >= 0 || answer >= 0 || decision >= 0 || tag >= 0 ||
-							info2 >= 0 || action2 >= 0 || topic2 >= 0 || idea2 >= 0 || 
-							question2 >= 0 || answer2 >= 0 || decision2 >= 0) {
-						if (!current_summary) {
-							current_summary = start_summary(session);
-							var obj4 = post_instructions(false, 'Started a conversation :start:  :small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down:', '');
-							obj4.response_type = "in_channel";
-							obj4 = {'slack': obj4};
-							var msg4 = new builder.Message().address(session.message.address);
-							msg4.textLocale('en-US');
-							msg4.sourceEvent(obj4);
-							bot.send(msg4);
-							send_tilda_post(obj4.slack.text, channel_id);
-						}
-			
-						if (info >= 0 || info2 >= 0) {
-							extract_text_command(session, '~addinfo', 'info', current_summary, 'information_source');
-						} else if (action >= 0 || action2 >= 0) {
-							extract_text_command(session, '~addaction', 'action',  current_summary, 'boom');
-						} else if (topic >= 0 || topic2 >= 0) {
-							extract_text_command(session, '~addtopic', 'topic',  current_summary, 'top');
-						} else if (idea >= 0 || idea2 >= 0) {
-							extract_text_command(session, '~addidea', 'idea',  current_summary, 'bulb');
-						} else if (question >= 0 || question2 >= 0) {
-							extract_text_command(session, '~addquestion', 'question',  current_summary, 'question');
-						} else if (answer >= 0 || answer2 >= 0) {
-							extract_text_command(session, '~addanswer', 'answer',  current_summary, 'exclamation');
-						} else if (decision >= 0 || decision2 >= 0) {
-							extract_text_command(session, '~adddecision', 'decision',  current_summary, 'decision');
-						} else if (tag >= 0) {
-							extract_text_command(session, '~addtag', 'tag',  current_summary, null);
-						}
-						
-						update_current_summary(team_id, channel_id, current_summary);
-					} else {
-						if (!current_summary) {
-							var lower_text = text.toLowerCase();
-							var possible_idea = ["great idea", "good idea", "nice idea", "i have an idea", "my idea", 'i have a proposal',
-								'great suggestion', 'good suggestion', 'nice suggestion','i have a suggestion'];
-							for (var i=0;i<possible_idea.length;i++) {
-								if (lower_text.indexOf(possible_idea[i]) >= 0) {
-									var suggest_text = "_Was there an important idea posed? Make a note of it with :idea:_";
-									post_to_channel(null, channel_id, suggest_text, null);
-								}
-							}
-							var possible_decision = ["let's agree to", "let's decide to", "we've decided", "the decision is to", "agreed"];
-							for (var i=0;i<possible_decision.length;i++) {
-								if (lower_text.indexOf(possible_decision[i]) >= 0) {
-									var suggest_text = "_Was there an important decision made? Make a note of it with :decision:_";
-									post_to_channel(null, channel_id, suggest_text, null);
-								}
-							}
-							var possible_action = ["can somebody", "don't forget to", "reminder to", "remember to", "reminder that you", "why don't you"];
-							for (var i=0;i<possible_action.length;i++) {
-								if (lower_text.indexOf(possible_action[i]) >= 0) {
-									var suggest_text = "_Was there an important action item made? Make a note of it with :action:_";
-									post_to_channel(null, channel_id, suggest_text, null);
-								}
-							}
-							var possible_info = ["announcement", "fyi"];
-							for (var i=0;i<possible_info.length;i++) {
-								if (lower_text.indexOf(possible_info[i]) >= 0) {
-									var suggest_text = "_Was there an important info item made? Make a note of it with :info:_";
-									post_to_channel(null, channel_id, suggest_text, null);
-								}
-							}
-							var possible_ques = ["can someone help me", "i'm having a problem with", "anyone know",
-								"i can't figure out", "i'm having trouble with", "how do i", "can i have some help", "i need help"];
-							for (var i=0;i<possible_ques.length;i++) {
-								if (lower_text.indexOf(possible_ques[i]) >= 0) {
-									var suggest_text = "_Was there an important question asked? Make a note of it with :question:_";
-									post_to_channel(null, channel_id, suggest_text, null);
-								}
-							}
-							
-						}
-					}
-					
-					
-					
-				}
-				
-				session.message.text = '';
-				
-				DB.collection("session").insertOne(session.message, function(err, res) {
-					if (err) {
-						console.log(err);
-					}
-				});
-				
-		}
-	);
-	
-	} catch (err) {
-		session.send(err.message);
-		console.log(err.message);
-	}
+	console.log(session);
 	
 }).set('storage', inMemoryStorage);
 
