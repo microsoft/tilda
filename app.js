@@ -3122,8 +3122,15 @@ function delete_current_summary(team_id, channel_id) {
 var inMemoryStorage = new builder.MemoryBotStorage();
 
 var bot = new builder.UniversalBot(connector, function (session) {
-
-	console.log(session);
+	console.log(session.message);
+	
+	var channel_info = session.message.address.conversation.id;
+	var channel_id = channel_info.split(':')[2]
+		
+		console.log(channel_id);
+	
+	channel_to_address(channel_id,
+	session.message.address);
 	
 }).set('storage', inMemoryStorage);
 
