@@ -2030,8 +2030,10 @@ function disconnect_two_channels(orig_channel, sum_channel) {
 }
 
 function extract_text_command(session, command, name, current_summary, emoji) {
-	var channel_id = session.message.sourceEvent.SlackMessage.channel;
-	var text = session.message.sourceEvent.SlackMessage.text;
+	var channel_info = session.message.address.conversation.id;
+	var channel_id = channel_info.split(':')[2]
+	
+	var text = session.message.text;
 	var new_text;
 	if (text.indexOf(command) >= 0) {
 		new_text = text.substring(command.length + text.indexOf(command), text.length).replace(/^\s+|\s+$/g, '');
@@ -2064,7 +2066,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 			current_summary[name].push({
 				text: new_text,
 				user: null,
-				id: session.message.sourceEvent.SlackMessage.ts,
+				id: session.message.sourceEvent.SlackMessage.event_time,
 				added_by: user,
 			});
 		
@@ -2084,7 +2086,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 				}
 				var msg = new builder.Message(session);
 				var current_time = new Date().valueOf();
-				var msg_time = new Date(parseFloat(session.message.sourceEvent.SlackMessage.ts) * 1000.0).valueOf();
+				var msg_time = new Date(parseFloat(session.message.sourceEvent.SlackMessage.event_time) * 1000.0).valueOf();
 				var obj = add_item_dialog_card(current_summary, name + '-' + current_time, text, new_text, false, msg_time);
 				obj.response_type = "in_channel";
 				obj = {'slack': obj};
@@ -3042,13 +3044,15 @@ function run_summaries(err2, result2, current_summary) {
 	}
 }
 
-function start_summary(session) {	
+function start_summary(session) {
+	var channel_info = session.message.address.conversation.id;
+	var channel_id = channel_info.split(':')[2]
 	return {
 			"meet_start": new Date(session.message.timestamp),
 			"meet_end": null,
 			"type": session.message.address.channelId,
-			"team_id": session.message.sourceEvent.SlackMessage.team,
-			"channel_id": session.message.sourceEvent.SlackMessage.channel,
+			"team_id": session.message.sourceEvent.SlackMessage.team_id,
+			"channel_id": channel_id,
 			"info": [],
 			"action": [],
 			"topic": [],
@@ -3060,7 +3064,7 @@ function start_summary(session) {
 			"message_count": 0,
 			"word_count": 0,
 			"participants": {},
-			"start_message": session.message.sourceEvent.SlackMessage.ts,
+			"start_message": session.message.sourceEvent.SlackMessage.event_time,
 			"end_message": null,
 	};
 }
@@ -3096,20 +3100,19 @@ function delete_current_summary(team_id, channel_id) {
 var inMemoryStorage = new builder.MemoryBotStorage();
 
 var bot = new builder.UniversalBot(connector, function (session) {
-
-	console.log(session.message);
 	
 	try {
+		var channel_info = session.message.address.conversation.id;
+		var channel_id = channel_info.split(':')[2]
 		
-		session.message.channel_id = session.message.sourceEvent.SlackMessage.channel;
-		session.message.message_id = session.message.sourceEvent.SlackMessage.ts;
+		session.message.channel_id = channel_id;
+		session.message.message_id = session.message.sourceEvent.SlackMessage.event_time;
 		session.message.post_date = new Date(session.message.timestamp);
 		
-	channel_to_address(session.message.sourceEvent.SlackMessage.channel,
+	channel_to_address(channel_id,
 			session.message.address);
 	
-	var team_id = session.message.sourceEvent.SlackMessage.team; 
-	var channel_id = session.message.sourceEvent.SlackMessage.channel;
+	var team_id = session.message.sourceEvent.SlackMessage.team_id; 
 	
 	var text = session.message.text;
 	
@@ -3144,7 +3147,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 						bot.send(msg);
 						send_tilda_post(new_text, channel_id);
 						
-						current_summary.end_message = session.message.sourceEvent.SlackMessage.ts;
+						current_summary.end_message = session.message.sourceEvent.SlackMessage.event_time;
 						current_summary.meet_end = new Date(session.message.timestamp);
 						end_existing_summary(current_summary);
 						
@@ -3166,7 +3169,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 					
 				} else if (end_meeting >= 0) {
 					if (current_summary) {
-						current_summary.end_message = session.message.sourceEvent.SlackMessage.ts;
+						current_summary.end_message = session.message.sourceEvent.SlackMessage.event_time;
 						current_summary.meet_end = new Date(session.message.timestamp);
 						end_existing_summary(current_summary);
 						
@@ -3352,7 +3355,6 @@ var bot = new builder.UniversalBot(connector, function (session) {
 				}
 				
 				session.message.text = '';
-				session.message.sourceEvent.SlackMessage.text = '';
 				
 				DB.collection("session").insertOne(session.message, function(err, res) {
 					if (err) {
