@@ -2213,7 +2213,7 @@ function add_answer_to_question(count, channel_id, team_domain, str, answer_link
 					str += temp_s;
 				}
 				if (summary[b[0]][i].user_id) {
-					str2 += ' -<@' + summary[b[0]][i].user_id + '>';
+					str += ' -<@' + summary[b[0]][i].user_id + '>';
 				} else if (summary[b[0]][i].user) {
 					str += ' -<@' + summary[b[0]][i].user + '>';
 				}
