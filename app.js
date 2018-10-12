@@ -2245,8 +2245,7 @@ function create_card_obj(category_count, summary, attachment_list, type_list, na
 				}
 				
 				str += type_list[i].text + ', ';
-				console.log(type_list[i]);
-				var id_r = type_list[i].id.replace('.','');
+				var id_r = type_list[i].id;
 				str2 += '<https://' + team_domain + '.slack.com/archives/' + channel_id + 
 				'/p' + id_r + '|' + (i+1) + '>. ';
 				
