@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-require('dotenv').config();
-
 var restify = require('restify');
 
 
@@ -14,11 +12,20 @@ https_options = {
     certificate: fs.readFileSync('/etc/letsencrypt/live/tildachat.com/fullchain.pem'),
 };
 
+
+function respond(req, res, next) {
+  res.send('hello ' + req.params.name);
+  next();
+}
+
 // Setup Restify Server
 var server = restify.createServer(https_options);
-server.use(restify.queryParser());
-server.use(restify.bodyParser());
 
-server.listen(process.env.port || process.env.PORT || 3978, function () {
+
+server.get('/hello/:name', respond);
+server.head('/hello/:name', respond);
+
+
+server.listen(3978, function () {
    console.log('%s listening to %s', server.name, server.url); 
 });
