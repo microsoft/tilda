@@ -95,7 +95,6 @@ server.get('/api/oauth', function (req, res, next) {
 });
 
 server.post('/api/events', function (req, res, next) {
-	console.log(req.body);
 	if (req.body.type && req.body.type == "url_verification") {
 		var text = req.body.challenge;
 		res.writeHead(200, {
@@ -176,6 +175,8 @@ server.post('/api/events', function (req, res, next) {
 // 				
 // 		res.json(req.body);
 // 		next();
+		console.log(req);
+		
 		res.redirect('https://slack.botframework.com/api/Events/TildaBot', next);
 	}
 	
