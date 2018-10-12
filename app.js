@@ -65,9 +65,6 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
-console.log(process.env.SLACK_CLIENT_ID);
-console.log(process.env.SLACK_CLIENT_SECRET);
-
 server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	console.log(req.params);
@@ -3105,6 +3102,8 @@ function delete_current_summary(team_id, channel_id) {
 var inMemoryStorage = new builder.MemoryBotStorage();
 
 var bot = new builder.UniversalBot(connector, function (session) {
+
+	console.log(session.message);
 	
 	try {
 		var channel_info = session.message.address.conversation.id;
