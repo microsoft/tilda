@@ -197,7 +197,7 @@ function send_star(err2, result2, r2, req, channel_id) {
 				function(err, r) {
 					console.log(err);
 				}
-			});
+			);
 			
 			
 			send_tilda_post(text, channel_id);
@@ -214,7 +214,7 @@ function send_star(err2, result2, r2, req, channel_id) {
 				function(err, r) {
 					console.log(err);
 				}
-			});
+			);
 			
 			send_tilda_post(new_text, channel_id);
 		}
