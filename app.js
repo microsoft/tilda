@@ -938,7 +938,7 @@ var start_instructions = "Write notes or add emojis to existing messages:\n" +
 		"•*Answer*: Type `/~addanswer`, or add :exclamation:\n" +
 		"•*Decision*: Type `/~adddecision`, or add :decision:\n" +
 		"•*Tag*: Add your own tag using `/~addtag`\n" +
-		"`/~endmeeting`, or :end: ends the conversation and creates a summary.\n\n" + 
+		"`/~end`, or :end: ends the conversation and creates a summary.\n\n" + 
 		"_Tilda is a research project by Microsoft. By using Tilda, you agree to our <https://www.microsoft.com/en-us/servicesagreement/|Terms of Use> and" +
 		' <https://privacy.microsoft.com/en-us/privacystatement|Privacy Statement>. For more info, contact us at: PrivCon_TnR@microsoft.com._';
 
