@@ -167,8 +167,15 @@ server.post('/api/events', function (req, res, next) {
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
-		req.url = "https://slack.botframework.com/api/Events/TildaBot"
-		next('route');
+		var message = req.body;
+		DB.collection("session").insertOne(message, function(err, res) {
+					if (err) {
+						console.log(err);
+					}
+				});
+				
+		res.json(req.body);
+		next();
 	}
 	
 	
@@ -3114,7 +3121,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 	var channel_info = session.message.address.conversation.id;
 	var channel_id = channel_info.split(':')[2]
 		
-		console.log(channel_id);
+	console.log(channel_id);
 	
 	channel_to_address(channel_id,
 	session.message.address);
