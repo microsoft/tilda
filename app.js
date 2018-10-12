@@ -3095,12 +3095,9 @@ function delete_current_summary(team_id, channel_id) {
 
 var inMemoryStorage = new builder.MemoryBotStorage();
 
-console.log(inMemoryStorage);
-console.log(connector);
-
 var bot = new builder.UniversalBot(connector, function (session) {
 
-	console.log(session);
+	console.log(session.message);
 	
 	try {
 		
@@ -3373,7 +3370,6 @@ var bot = new builder.UniversalBot(connector, function (session) {
 	
 }).set('storage', inMemoryStorage);
 
-console.log(bot);
 
 function initDB() {
 	DB.createCollection('currentsummary', function(err, collection){});
