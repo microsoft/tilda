@@ -70,7 +70,7 @@ server.get('/api/oauth', function (req, res, next) {
 	console.log(req.params);
 	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
-	"https://tildachat.com:3978/api/oauth",
+	"https://tildachat.com:8080/api/oauth",
 			function(err, result) {
 				if (!err) {
 					DB.collection("oauthtokens").update(
