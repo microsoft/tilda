@@ -65,6 +65,9 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
+console.log(process.env.SLACK_CLIENT_ID);
+console.log(process.env.SLACK_CLIENT_SECRET);
+
 server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	console.log(req.params);
@@ -95,6 +98,7 @@ server.get('/api/oauth', function (req, res, next) {
 });
 
 server.post('/api/events', function (req, res, next) {
+	console.log(req.body);
 	if (req.body.type && req.body.type == "url_verification") {
 		var text = req.body.challenge;
 		res.writeHead(200, {
@@ -294,6 +298,7 @@ function remove_plus(obj) {
 }
 
 server.post('/api/actions', function (req, res, next) {
+	console.log(req.body);
 	var payload = decodeURIComponent(req.body);
 	payload = payload.substring(8,payload.length);
 	
