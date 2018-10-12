@@ -69,10 +69,14 @@ server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	console.log(req.params);
 	
+	console.log(process.env.SLACK_CLIENT_ID);
+	console.log(process.env.SLACK_CLIENT_SECRET);
+	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
 	"https://tildachat.com:8080/api/oauth",
 			function(err, result) {
 				if (!err) {
+					console.log('here');
 					DB.collection("oauthtokens").update(
 							{team_id: result.team_id},
 							result, {upsert: true});
@@ -88,6 +92,9 @@ server.get('/api/oauth', function (req, res, next) {
 					res.write(text);
 					res.end();
 					next();
+				}
+				else {
+					console.log(err);
 				}
 			});
 	
