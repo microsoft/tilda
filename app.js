@@ -55,10 +55,6 @@ var emojis = {
 
 var types = ['action', 'info', 'decision', 'idea', 'question', 'answer'];
 
-
-// Listen for messages from users 
-server.post('/api/messages', connector.listen());
-
 server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
 	console.log(req.params);
