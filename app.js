@@ -107,6 +107,8 @@ server.post('/api/events', function (req, res, next) {
 		next();
 	} else if (req.body.event.type == "reaction_added") {
 		post_proactive_dialog_action(req.body);
+		res.json(req.body);
+		next();
 	} else if (req.body.event.type == "star_added") {
 		var channel_id = req.body.event.item.channel;
 		var team_id = req.body.team_id;
@@ -161,30 +163,15 @@ server.post('/api/events', function (req, res, next) {
 														}}});
 										}});
 						}}});
+	
+		res.json(req.body);
+		next();
 	} else if (req.body.event.type == "message") {
-		console.log('HERE');
-		
-		DB.collection("channeladdress").findOne({channel: channel_id},
-				function(err, result) {
-					if (!err) {
-						if (result) {
-		var obj2 = post_instructions(false, new_text,
-					'Start a conversation with :start: ');
-			obj2 = {'slack': obj2};
-			
-			var msg2 = new builder.Message().address(result.address);
-			msg2.textLocale('en-US');
-			msg2.sourceEvent(obj2);
-			bot.send(msg2);
-			send_tilda_post(new_text, channel_id);
-			
-			}
-			}
-			});
+		req.url = "https://slack.botframework.com/api/Events/TildaBot"
+		next('route');
 	}
 	
-	res.json(req.body);
-	next();
+	
 });
 
 function send_star(err2, result2, r2, req, result, channel_id) {
