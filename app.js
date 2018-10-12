@@ -326,10 +326,6 @@ server.post('/api/actions', function (req, res, next) {
 	if (payload_json.actions[0].name == "channels_list") {
 		var to_channel = payload_json.actions[0].selected_options[0].value;
 		
-		DB.collection("channeladdress").findOne({channel: to_channel},
-				function(err, result) {
-					if (!err) {
-						if (result) {
 							var new_card = {
 							    	slack: orig_message,
 							};
@@ -340,14 +336,14 @@ server.post('/api/actions', function (req, res, next) {
 								new_card.slack.attachments.splice(0,1);
 							}
 							
-							var msg = new builder.Message().address(result.address);
-							msg.textLocale('en-US');
-							msg.sourceEvent(new_card);
-							bot.send(msg);
-						}
-					}
-			});
-	
+							
+		   slack.chat.postMessage(channel_id, 
+				new_card.slack.text, {attachments: new_card.slack.attachments}, 
+				function(err, r) {
+					console.log(err);
+				}
+			);
+			
 		response = {
 				text: 'Sent summary to <#' + to_channel + '>. _If you don\'t see it, make sure that @tilda is a member of the channel._',
 				replace_original: false,
