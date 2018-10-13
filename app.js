@@ -155,7 +155,7 @@ server.post('/api/events', function (req, res, next) {
 		console.log(req.body.event.text);
 		try {
 		
-		if (req.body.event.subtype != "bot_message"  && req.body.event.subtype != "message_changed") {
+		if (!req.body.event.subtype) {
 		
 		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
