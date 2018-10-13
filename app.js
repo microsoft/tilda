@@ -242,6 +242,7 @@ server.post('/api/events', function (req, res, next) {
 							var obj3 = end_meeting_dialog(text2, new Date().valueOf());
 							obj3 = {'slack': obj3};
 							
+							console.log(channel_id);
 							slack.chat.postMessage(channel_id, 
 								obj3.slack.text, {attachments: obj3.slack.attachments}, 
 								function(err, r) {
