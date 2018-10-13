@@ -435,7 +435,7 @@ server.post('/api/events', function (req, res, next) {
 		}
 	);
 	
-	catch (err) {
+	} catch (err) {
 		console.log(err.message);
 	}
 
