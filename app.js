@@ -162,9 +162,8 @@ server.post('/api/events', function (req, res, next) {
 		
 		req.body.message_id = message_id;
 		
-		console.log(message_id);
 		DB.collection("session").findOne({message_id: message_id, team_id: team_id, event_id: req.body.event_id}, function(err, res_find) {
-					console.log(res_find);
+				
 					if (!res_find) {
 					
 					console.log(req.body);
@@ -194,6 +193,7 @@ server.post('/api/events', function (req, res, next) {
 						var obj = end_meeting_dialog(new_text, new Date().valueOf());
 						obj = {'slack': obj};
 						
+						console.log(channel_id);
 						slack.chat.postMessage(channel_id, 
 							obj.slack.text, {attachments: obj.slack.attachments}, 
 							function(err, r) {
@@ -207,24 +207,25 @@ server.post('/api/events', function (req, res, next) {
 						current_summary.end_message = message_id;
 						current_summary.meet_end = post_date;
 						end_existing_summary(current_summary);
-						
 						delete_current_summary(team_id, channel_id);
 					}
+					
 					current_summary = start_summary(req.body, post_date);
 					
-					if (text.indexOf('/~start') < 0 || text.indexOf(':start:') >= 0) {
 						var obj2 = post_instructions(false, 'Started a conversation :start:  :small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down:', '');
 						obj2 = {'slack': obj2};
 						
-						console.log(channel_id);
-						slack.chat.postMessage(channel_id, 
-							obj2.slack.text, {attachments: obj2.slack.attachments}, 
-							function(err, r) {
-								console.log(err);
-								}
-						);
-						send_tilda_post(obj2.slack.text, channel_id);
-					}
+						if (text.indexOf('/~start') < 0) {
+							console.log(channel_id);
+							slack.chat.postMessage(channel_id, 
+								obj2.slack.text, {attachments: obj2.slack.attachments}, 
+								function(err, r) {
+									console.log(err);
+									}
+							);
+						}
+					send_tilda_post(obj2.slack.text, channel_id);
+					
 					update_current_summary(team_id, channel_id, current_summary);
 					
 				} else if (end_meeting >= 0) {
