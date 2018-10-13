@@ -160,8 +160,8 @@ server.post('/api/events', function (req, res, next) {
 		var post_date = new Date();
 		var text = req.body.event.text;
 		
-		console.log(message_id);
-		DB.collection("session").findOne({event.event_ts: message_id}, function(err, res_find) {
+		console.log(req.body.token);
+		DB.collection("session").findOne({token: req.body.token}, function(err, res_find) {
 					console.log(res_find);
 					if (!res_find) {
 					
