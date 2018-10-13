@@ -592,6 +592,8 @@ server.post('/api/actions', function (req, res, next) {
 	var payload_json = JSON.parse(payload);
 	
 	var channel_id = payload_json.channel.id;
+	
+	console.log(channel_id);
 	var team_id = payload_json.team.id;
 	var team_domain = payload_json.team.domain;
 	var orig_message = payload_json.original_message;
