@@ -162,6 +162,8 @@ server.post('/api/events', function (req, res, next) {
 		
 		DB.collection("session").findOne({token: req.body.token}, function(err, res_find) {
 					if (!res_find) {
+					
+					console.log(req.body);
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
