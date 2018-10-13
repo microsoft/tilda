@@ -164,19 +164,11 @@ server.post('/api/events', function (req, res, next) {
 	
 		var text = req.body.event.text;
 		
-		console.log(team_id);
-		console.log(channel_id);
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
 			function(err, result) {
 			
-			
-				console.log(err);
-			
-				console.log(result);
-				
-				console.log('here!');
 				current_summary = result;
 				
 				var start_meeting = (text.indexOf('/~start') == 0) || (text.indexOf('~start') == 0) || (text.indexOf(':start:') >= 0);
@@ -220,6 +212,7 @@ server.post('/api/events', function (req, res, next) {
 						var obj2 = post_instructions(false, 'Started a conversation :start:  :small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down::small_red_triangle_down:', '');
 						obj2 = {'slack': obj2};
 						
+						console.log(channel_id);
 						slack.chat.postMessage(channel_id, 
 							obj2.slack.text, {attachments: obj2.slack.attachments}, 
 							function(err, r) {
@@ -2370,7 +2363,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 				}
 				
 				var current_time = new Date().valueOf();
-				var msg_time = new Date(parseFloat(session.message.sourceEvent.SlackMessage.event_time) * 1000.0).valueOf();
+				var msg_time = new Date(parseFloat(session.event.event_ts) * 1000.0).valueOf();
 				
 				var obj = add_item_dialog_card(current_summary, name + '-' + current_time, text, new_text, false, msg_time);
 				
