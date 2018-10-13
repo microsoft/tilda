@@ -1333,14 +1333,9 @@ server.post('/api/commands', function (req, res, next) {
 			text = "Ended conversation :end:   :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:";
 		} else if (args.command.indexOf('~followchannel') !== -1) {
 		
-			console.log(args);
 			var parts = args.text.split(' ');
-			console.log(parts);
 			var channel_info = parts[0].split('|');
-			console.log(channel_info);
-			var channel_id = channel_info[0].substring(1, channel_info[0].length);
-			console.log(channel_id);
-			
+			var channel_id = channel_info[0].substring(2, channel_info[0].length);
 			
 			var people = [];
 			var tags = [];
