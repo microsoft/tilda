@@ -1335,6 +1335,7 @@ server.post('/api/commands', function (req, res, next) {
 		
 			var parts = args.text.split(' ');
 			var channel_info = parts[0].split('|');
+			console.log(channel_info);
 			var channel_id = channel_info[0].substring(1, channel_info[0].length);
 			console.log(channel_id);
 			var people = [];
