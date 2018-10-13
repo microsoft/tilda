@@ -155,7 +155,7 @@ server.post('/api/events', function (req, res, next) {
 		console.log(req.body.event.text);
 		try {
 		
-		if (!req.body.event.message || (req.body.event.message.subtype != "bot_message" && req.body.event.message.username != "Tilda")) {
+		if (req.body.event.subtype != "bot_message") {
 		
 		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
@@ -189,7 +189,7 @@ server.post('/api/events', function (req, res, next) {
 				}
 				
 				console.log(start_meeting);
-				console.log(current_summary);
+				console.log(current_summary == null);
 				
 				if (start_meeting >= 0 && !current_summary) {
 					if (current_summary) {
