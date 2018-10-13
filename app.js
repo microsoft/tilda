@@ -153,7 +153,8 @@ server.post('/api/events', function (req, res, next) {
 	} else if (req.body.event.type == "message") {
 	
 		
-		var channel_id = req.body.event.item.channel;
+		try {
+		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
 		
 		
@@ -433,6 +434,10 @@ server.post('/api/events', function (req, res, next) {
 				
 		}
 	);
+	
+	catch (err) {
+		console.log(err.message);
+	}
 
 		res.json(req.body);
 		next();
