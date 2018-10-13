@@ -155,7 +155,7 @@ server.post('/api/events', function (req, res, next) {
 		console.log(req.body.event.text);
 		try {
 		
-		if (req.body.event.message.username != "Tilda") {
+		if (req.body.event.message && req.body.event.message.username != "Tilda") {
 		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
 		var message_id = req.body.event.event_ts;
