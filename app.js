@@ -160,7 +160,8 @@ server.post('/api/events', function (req, res, next) {
 		var team_id = req.body.team_id;
 		var message_id = req.body.event.event_ts;
 		var post_date = new Date();
-		var text = req.body.event.text;
+		var text = '';
+		text = req.body.event.text;
 		
 		req.body.message_id = message_id;
 		
@@ -168,7 +169,7 @@ server.post('/api/events', function (req, res, next) {
 				
 					if (!res_find) {
 					
-					console.log(req.body);
+					console.log(req.body.event);
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
