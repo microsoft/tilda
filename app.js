@@ -1336,6 +1336,8 @@ server.post('/api/commands', function (req, res, next) {
 			var parts = args.text.split(' ');
 			var channel_info = parts[0].split('|');
 			var channel_id = channel_info[0].substring(1, channel_info[0].length);
+
+			var channel_name = channel_info[1].substring(0, channel_info[1].length-1);
 			
 			console.log(channel_id);
 			var people = [];
@@ -1354,21 +1356,21 @@ server.post('/api/commands', function (req, res, next) {
 				}
 			}
 			if (people.length == 0 && tags.length == 0) {
-				text = "Summaries of conversations in <#" + channel_id + "> will be posted here.";
+				text = "Summaries of conversations in #" + channel_name + " will be posted here.";
 			} else if (people.length > 0 && tags.length == 0) {
-				text = "Summaries of conversations in <#" + channel_id + "> containing participants: "
+				text = "Summaries of conversations in #" + channel_name + " containing participants: "
 				for (var i=0;i<people.length;i++) {
 					text += people[i] + ' ';
 				}
 				text += "will be posted here.";
 			} else if (people.length == 0 && tags.length > 0) {
-				text = "Summaries of conversations in <#" + channel_id + "> containing tags: "
+				text = "Summaries of conversations in #" + channel_name + " containing tags: "
 				for (var i=0;i<tags.length;i++) {
 					text += tags[i] + ' ';
 				}
 				text += "will be posted here.";
 			} else if (people.length > 0 && tags.length > 0) {
-				text = "Summaries of conversations in <#" + channel_id + "> containing tags: "
+				text = "Summaries of conversations in #" + channel_name + " containing tags: "
 				for (var i=0;i<tags.length;i++) {
 					text += tags[i] + ' ';
 				}
