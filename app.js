@@ -2384,7 +2384,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 			
 				
 			slack.chat.postMessage(channel_id, 
-				obj.slack.text, {attachments: obj.slack.attachments}, 
+				obj.text, {attachments: obj.attachments}, 
 				function(err, r) {
 					console.log(err);
 				}
