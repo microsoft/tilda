@@ -187,6 +187,9 @@ server.post('/api/events', function (req, res, next) {
 					end_meeting = -1;
 				}
 				
+				console.log(start_meeting);
+				console.log(current_summary);
+				
 				if (start_meeting >= 0) {
 					if (current_summary) {
 						var new_text = 'Ended prior conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
