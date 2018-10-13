@@ -192,7 +192,7 @@ server.post('/api/events', function (req, res, next) {
 				console.log(start_meeting);
 				console.log(current_summary);
 				
-				if (start_meeting >= 0) {
+				if (start_meeting >= 0 && !current_summary) {
 					if (current_summary) {
 						var new_text = 'Ended prior conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
 						var obj = end_meeting_dialog(new_text, new Date().valueOf());
@@ -233,7 +233,7 @@ server.post('/api/events', function (req, res, next) {
 					
 					update_current_summary(team_id, channel_id, current_summary);
 					
-				} else if (end_meeting >= 0) {
+				} else if (end_meeting >= 0 && current_summary) {
 					if (current_summary) {
 						current_summary.end_message = message_id;
 						current_summary.meet_end = post_date;
