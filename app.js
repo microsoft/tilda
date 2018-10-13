@@ -233,13 +233,13 @@ server.post('/api/events', function (req, res, next) {
 					
 					update_current_summary(team_id, channel_id, current_summary);
 					
-				} else if (end_meeting >= 0 && current_summary) {
+				} else if (end_meeting >= 0) {
 					if (current_summary) {
 						current_summary.end_message = message_id;
 						current_summary.meet_end = post_date;
 						end_existing_summary(current_summary);
 						
-						if (text.indexOf('/~end') < 0 || text.indexOf(':end:') >= 0) {
+						if (text.indexOf('/~end') < 0) {
 							var text2 = 'Ended conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
 							var obj3 = end_meeting_dialog(text2, new Date().valueOf());
 							obj3 = {'slack': obj3};
@@ -351,6 +351,7 @@ server.post('/api/events', function (req, res, next) {
 							
 							obj4 = {'slack': obj4};
 							
+							console.log(channel_id);
 							slack.chat.postMessage(channel_id, 
 								obj4.slack.text, {attachments: obj4.slack.attachments}, 
 								function(err, r) {
@@ -2383,6 +2384,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 				
 			
 				
+			console.log(channel_id);
 			slack.chat.postMessage(channel_id, 
 				obj.text, {attachments: obj.attachments}, 
 				function(err, r) {
@@ -2444,6 +2446,7 @@ function add_tag_card(channel, session) {
 				if (!err) {
 					obj = create_tag_card(results);
 					
+					console.log(channel_id);
 					slack.chat.postMessage(channel, 
 						obj.slack.text, {attachments: obj.slack.attachments}, 
 						function(err, r) {
