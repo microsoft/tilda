@@ -151,6 +151,9 @@ server.post('/api/events', function (req, res, next) {
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
+	
+	
+	try {
 		var channel_id = req.body.event.item.channel;
 		var team_id = req.body.team_id;
 		
