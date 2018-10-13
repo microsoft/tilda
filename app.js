@@ -1336,6 +1336,8 @@ server.post('/api/commands', function (req, res, next) {
 			var parts = args.text.split(' ');
 			var channel_info = parts[0].split('|');
 			var channel_id = channel_info[0].substring(1, channel_info[0].length);
+			
+			console.log(channel_id);
 			var people = [];
 			var tags = [];
 			for (var i=1; i<parts.length;i++) {
