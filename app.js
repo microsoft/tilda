@@ -152,7 +152,7 @@ server.post('/api/events', function (req, res, next) {
 		next();
 	} else if (req.body.event.type == "message") {
 	
-		
+		console.log(req.body.event.text);
 		try {
 		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
@@ -160,7 +160,9 @@ server.post('/api/events', function (req, res, next) {
 		var post_date = new Date();
 		var text = req.body.event.text;
 		
-		DB.collection("session").findOne({token: req.body.token}, function(err, res_find) {
+		console.log(message_id);
+		DB.collection("session").findOne({event.event_ts: message_id}, function(err, res_find) {
+					console.log(res_find);
 					if (!res_find) {
 					
 					console.log(req.body);
