@@ -164,10 +164,6 @@ server.post('/api/events', function (req, res, next) {
 		text = req.body.event.text;
 		
 		req.body.message_id = message_id;
-		
-		DB.collection("session").findOne({message_id: message_id, team_id: team_id, event_id: req.body.event_id}, function(err, res_find) {
-				
-					if (!res_find) {
 					
 					console.log(req.body.event);
 	
@@ -441,7 +437,6 @@ server.post('/api/events', function (req, res, next) {
 		}
 	);
 	
-	}});
 		
 	}
 	} catch (err) {
