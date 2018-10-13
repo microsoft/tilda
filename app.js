@@ -1333,7 +1333,7 @@ server.post('/api/commands', function (req, res, next) {
 			text = "Ended conversation :end:   :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:";
 		} else if (args.command.indexOf('~followchannel') !== -1) {
 		
-			console.log(args.text);
+			console.log(args);
 			var parts = args.text.split(' ');
 			console.log(parts);
 			var channel_info = parts[0].split('|');
