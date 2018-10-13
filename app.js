@@ -156,14 +156,12 @@ server.post('/api/events', function (req, res, next) {
 		try {
 		var channel_id = req.body.event.channel;
 		var team_id = req.body.team_id;
-		
-		
 		var message_id = req.body.event.event_ts;
 		var post_date = new Date();
-		
-	
 		var text = req.body.event.text;
 		
+		DB.collection("session").findOne({token: req.body.token, function(err, res_find) {
+					if (!res_find) {
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
@@ -427,6 +425,9 @@ server.post('/api/events', function (req, res, next) {
 				
 		}
 	);
+	
+	}});
+		
 	
 	} catch (err) {
 		console.log(err.message);
