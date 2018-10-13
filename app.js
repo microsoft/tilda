@@ -152,7 +152,7 @@ server.post('/api/events', function (req, res, next) {
 		next();
 	} else if (req.body.event.type == "message") {
 	
-		console.log(req.body);
+		
 		var channel_id = req.body.event.item.channel;
 		var team_id = req.body.team_id;
 		
@@ -162,11 +162,20 @@ server.post('/api/events', function (req, res, next) {
 		
 	
 		var text = req.body.event.text;
+		
+		console.log(team_id);
+		console.log(channel_id);
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
 			function(err, result) {
+			
+			
+				console.log(err);
+			
 				console.log(result);
+				
+				console.log('here!');
 				current_summary = result;
 				
 				var start_meeting = (text.indexOf('/~start') == 0) || (text.indexOf('~start') == 0) || (text.indexOf(':start:') >= 0);
