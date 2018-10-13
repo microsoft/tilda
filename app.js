@@ -610,7 +610,7 @@ server.post('/api/actions', function (req, res, next) {
 							}
 							
 							
-		   slack.chat.postMessage(channel_id, 
+		   slack.chat.postMessage(to_channel, 
 				new_card.slack.text, {attachments: new_card.slack.attachments}, 
 				function(err, r) {
 					console.log(err);
