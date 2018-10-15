@@ -10,7 +10,6 @@
   "license": "MIT",
   "dependencies": {
     "@slack/client": "^3.10.0",
-    "botbuilder": "^3.8.3",
     "dotenv": "^4.0.0",
     "mongodb": "^2.2.30",
     "restify": "^4.3.0"
