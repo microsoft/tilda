@@ -17,7 +17,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 ## Get Slack API Credentials
 
-1. To run your own version of Tilda, you'll need to get an account on api.slack.com. Once you have done so, create a new Slack App and select a Slack Workspace that you will be using for development. Once you have done so, under App Credentials, grab your Slack client ID (`SLACK_CLIENT_ID`) and secret (`SLACK_CLIENT_SECRET`) for below.
+1. To run your own version of Tilda, you'll need to get an account on `api.slack.com`. Once you have done so, create a new Slack App and select a Slack Workspace that you will be using for development. Once you have done so, under App Credentials, grab your Slack client ID (`SLACK_CLIENT_ID`) and secret (`SLACK_CLIENT_SECRET`) for below.
 
 2. Click on Interactive Components. Then turn on Interactivity. We'll come back to add a URL once the node server is set up.
 
@@ -39,7 +39,7 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 
 1. Follow instructions to install MongoDB on your space or server. Here are [installation instructions for Ubuntu](https://hevodata.com/blog/install-mongodb-on-ubuntu/).
 
-2. Run MongoDB.
+2. Run MongoDB in the background.
 
 3. Keep track of the URL and port that MongoDB is running on so node can connect to it. If you're running it on the same space as your node.js server and using port 27017 (the default), this should be `mongodb://localhost:27017/tilda` (`MONGO_DB`).
 
@@ -81,7 +81,27 @@ You can confirm by going in your browser to the proper URL and port (8080). You 
 
 ## Set up Slack API
 
+1. Head back to `api.slack.com` to finish configuring the API. Under Interactive Messages, put the following under Request URL: `https://[YOUR URL]:8080/api/actions`. Now click Save Changes.
 
+2. Go to Slash Commands. You'll need to add all the Tilda slash commands here. These include:
+
+| Slash Command     | Request URL                          | Short Description                          | Usage Hint                                         | Escape info |
+|-------------------|--------------------------------------|--------------------------------------------|----------------------------------------------------|-------------|
+| /~start           | https://[YOUR_URL]:8080/api/commands | Start a conversation.                      |                                                    |             |
+| /~end             | https://[YOUR_URL]:8080/api/commands | End the conversation.                      |                                                    |             |
+| /~addaction       | https://[YOUR_URL]:8080/api/commands | Add an action item.                        | [action item]                                      | Yes         |
+| /~addanswer       | https://[YOUR_URL]:8080/api/commands | Add an answer or suggestion to a question. | [answer]                                           | Yes         |
+| /~adddecision     | https://[YOUR_URL]:8080/api/commands | Add a decision that was made.              | [decision]                                         | Yes         |
+| /~addidea         | https://[YOUR_URL]:8080/api/commands | Add an idea or proposal item.              | [idea]                                             | Yes         |
+| /~addinfo         | https://[YOUR_URL]:8080/api/commands | Add an info item.                          | [info item]                                        | Yes         |
+| /~addquestion     | https://[YOUR_URL]:8080/api/commands | Add a question or request for help         | [question]                                         | Yes         |
+| /~addtag          | https://[YOUR_URL]:8080/api/commands | Tag this conversation with keywords        | optional: [tag]                                    |             |
+| /~currentsummary  | https://[YOUR_URL]:8080/api/commands | See what notes are in the current summary  |                                                    |             |
+| /~followchannel   | https://[YOUR_URL]:8080/api/commands | Post summaries from another channel here.  | [#channelname] [optional: @users] [optional: tags] | Yes         |
+| /~instructions    | https://[YOUR_URL]:8080/api/commands | Instructions for adding notes.             |                                                    |             |
+| /~unfollowchannel | https://[YOUR_URL]:8080/api/commands | Stop getting summaries from a channel.     | [#channelname]                                     | Yes         |
+
+3. 
 
 
 
