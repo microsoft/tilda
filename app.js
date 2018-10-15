@@ -3428,7 +3428,7 @@ function initDB() {
 								if (!e3) {
 									if (r3) {
 										slack = new SlackClient(r3.access_token);
-										if (result.channel_id.startsWith('C')) {
+										if (result.channel_id.startsWith('C') || result.channel_id.startsWith('G') || result.channel_id.startsWith('D')) {
 											slack.channels.history(
 												result.channel_id,
 												{count: 1},
@@ -3446,43 +3446,7 @@ function initDB() {
 													}
 												}
 											);
-										} else if (result.channel_id.startsWith('G')) { 
-											slack.groups.history(
-													result.channel_id,
-													{count: 1},
-													function(err2, result2) {
-														var date = new Date(parseFloat(result2.messages[0].ts) * 1000.0);
-														if (date < older_date || last_updated < hour_ago) {
-															summary.end_message = result2.messages[0].ts;
-															summary.meet_end = date;
-															var text = 'Due to inactivity, ended conversation :end: at  _"' + result2.messages[0].text + '"_';
-															var obj = end_meeting_dialog(text, date.valueOf());
-															obj = {'slack': obj};
-															post_to_channel(summary, result.channel_id, text, obj);
-															end_existing_summary(summary);
-															delete_current_summary(result.team_id, result.channel_id);
-														}
-													}
-												);
-										} else if (result.channel_id.startsWith('D')) { 
-											slack.im.history(
-													result.channel_id,
-													{count: 1},
-													function(err2, result2) {
-														var date = new Date(parseFloat(result2.messages[0].ts) * 1000.0);
-														if (date < older_date || last_updated < hour_ago) {
-															summary.end_message = result2.messages[0].ts;
-															summary.meet_end = date;
-															var text = 'Due to inactivity, ended conversation :end: at  _"' + result2.messages[0].text + '"_';
-															var obj = end_meeting_dialog(text, date.valueOf());
-															obj = {'slack': obj};
-															post_to_channel(summary, result.channel_id, text, obj);
-															end_existing_summary(summary);
-															delete_current_summary(result.team_id, result.channel_id);
-														}
-													}
-												);
-										}
+										} 
 									}
 								}
 							});
