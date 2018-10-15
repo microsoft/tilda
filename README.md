@@ -117,7 +117,7 @@ Then subscribe to the following Bot Events:
 | message.im       | A message was posted in a direct message channel            |
 | message.mpim     | A message was posted in a multiparty direct message channel |
 
-4. Go to Permissions. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
+4. Go to *Permissions*. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
 
 
 ## Set up Slack Workspace
@@ -127,12 +127,12 @@ Then subscribe to the following Bot Events:
 Luckily `:question:` is already there and so is `:end:`.
 
 Add the following aliases:
-`:boom:` -> `:action:`
-`:exclamation:` -> `:answer:`
-`:bulb:` -> `:idea:`
-`:handshake:` -> `:decision:`
-`:information_source:` -> `:info:`
-`:top:` -> `:topic:`
+* `:boom:` -> `:action:`
+* `:exclamation:` -> `:answer:`
+* `:bulb:` -> `:idea:`
+* `:handshake:` -> `:decision:`
+* `:information_source:` -> `:info:`
+* `:top:` -> `:topic:`
 
 One more requires adding a custom emoji. Upload the file `start.png` from this repository. Give it the name `:start:`.
 
