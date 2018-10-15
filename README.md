@@ -101,7 +101,23 @@ You can confirm by going in your browser to the proper URL and port (8080). You 
 | /~instructions    | https://[YOUR_URL]:8080/api/commands | Instructions for adding notes.             |                                                    |             |
 | /~unfollowchannel | https://[YOUR_URL]:8080/api/commands | Stop getting summaries from a channel.     | [#channelname]                                     | Yes         |
 
-3. 
+3. Go to Event Subscriptions. Under Request URL, put `https://[YOUR_URL]:8080/api/events`. Slack should confirm the endpoint at this point. Subscribe to the following Workspace Events:
+
+| Event Name     | Description                                     | Required Scope |
+|----------------|-------------------------------------------------|----------------|
+| reaction_added | A member has added an emoji reaction to an item | reactions:read |
+| star_added     | A member has starred an item                    | stars:read     |
+
+Then subscribe to the following Bot Events:
+
+| Event Name       | Description                                                 |
+|------------------|-------------------------------------------------------------|
+| message.channels | A message was posted to a channel                           |
+| message.groups   | A message was posted to a private channel                   |
+| message.im       | A message was posted in a direct message channel            |
+| message.mpim     | A message was posted in a multiparty direct message channel |
+
+4. Go to Permissions. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
 
 
 
