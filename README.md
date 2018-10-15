@@ -120,4 +120,22 @@ Then subscribe to the following Bot Events:
 4. Go to Permissions. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
 
 
+## Set up Slack Workspace
 
+1. Now Tilda should be installed into your test Slack Workspace. One last thing you need to do is to add Tilda's custom emoji reactions. Go to `https://[YOUR_WORKSPACE].slack.com/customize/emoji`. 
+
+Luckily `:question:` is already there and so is `:end:`.
+
+Add the following aliases:
+`:boom:` -> `:action:`
+`:exclamation:` -> `:answer:`
+`:bulb:` -> `:idea:`
+`:handshake:` -> `:decision:`
+`:information_source:` -> `:info:`
+`:top:` -> `:topic:`
+
+One more requires adding a custom emoji. Upload the file `start.png` from this repository. Give it the name `:start:`.
+
+## Done!
+
+You can now begin playing with Tilda in your test workspace. Remember to add `@tilda` to any channel that you would like to use Tilda for taking notes. If you want to distribute your app to 
