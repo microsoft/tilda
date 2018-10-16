@@ -117,7 +117,7 @@ Then subscribe to the following Bot Events:
 | message.im       | A message was posted in a direct message channel            |
 | message.mpim     | A message was posted in a multiparty direct message channel |
 
-4. Go to *Permissions*. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
+4. Go to **Permissions**. Under Redirect URLS, add `https:[YOUR_URL]:8080/api/oauth` and save. Then, under Scopes, add the following permission scopes: `channels:history`, `chat:write:bot`, `bot`, `commands`, `reactions:read`, `stars:read`. You may need to reinstall the app to your Slack workspace with the new permissions.
 
 
 ## Set up Slack Workspace
@@ -138,4 +138,4 @@ One more requires adding a custom emoji. Upload the file `start.png` from this r
 
 ## Done!
 
-You can now begin playing with Tilda in your test workspace. Remember to add `@tilda` to any channel that you would like to use Tilda for taking notes. If you want to distribute your app to 
+You can now begin playing with Tilda in your test workspace. Remember to add `@tilda` to any channel that you would like to use Tilda for taking notes. If you want to distribute your app to other workspaces beyond the test one, you must click on Manage Distribution on the Slack API page to generate the links to get permissions for other workspaces.
