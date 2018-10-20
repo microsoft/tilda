@@ -1776,6 +1776,7 @@ function teamdomain_to_id(team_id, team_domain) {
 function post_proactive_dialog_action(args) {
 	try {
 	var possible_emojis = ['start', 'end','information_source', 'boom', 'top', 'question', 'exclamation', 'bulb', 'handshake'];
+	console.log(args);
 	
 	if (args.event.type == "reaction_added" && possible_emojis.indexOf(args.event.reaction) >= 0) {
 		var channel_id = args.event.item.channel;
