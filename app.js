@@ -46,7 +46,7 @@ server.listen(8080, function () {
 var emojis = {
 		boom: "action",
 		top: "topic",
-		decision: "decision",
+		handshake: "decision",
 		question: "question",
 		exclamation: "answer",
 		bulb: "idea",
@@ -57,7 +57,6 @@ var types = ['action', 'info', 'decision', 'idea', 'question', 'answer'];
 
 server.get('/api/oauth', function (req, res, next) {
 	var code = req.params.code;
-	console.log(req.params);
 	
 	slack.oauth.access(process.env.SLACK_CLIENT_ID, process.env.SLACK_CLIENT_SECRET, code, 
 	"https://tildachat.com:8080/api/oauth",
@@ -151,8 +150,6 @@ server.post('/api/events', function (req, res, next) {
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
-	
-		console.log(req.body.event.text);
 		try {
 		
 		if (!req.body.event.subtype) {
@@ -165,9 +162,6 @@ server.post('/api/events', function (req, res, next) {
 		text = req.body.event.text;
 		
 		req.body.message_id = message_id;
-		
-		console.log(req.body.event);
-					
 	
 	DB.collection("currentsummary").findOne({team_id: team_id,
 		channel_id: channel_id},
@@ -188,16 +182,12 @@ server.post('/api/events', function (req, res, next) {
 					end_meeting = -1;
 				}
 				
-				console.log(start_meeting);
-				console.log(current_summary == null);
-				
 				if (start_meeting >= 0 && !current_summary) {
 					if (current_summary) {
 						var new_text = 'Ended prior conversation :end:  :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:';
 						var obj = end_meeting_dialog(new_text, new Date().valueOf());
 						obj = {'slack': obj};
 						
-						console.log(channel_id);
 						slack.chat.postMessage(channel_id, 
 							obj.slack.text, {attachments: obj.slack.attachments}, 
 							function(err, r) {
@@ -220,7 +210,6 @@ server.post('/api/events', function (req, res, next) {
 						obj2 = {'slack': obj2};
 						
 						if (text.indexOf('/~start') < 0) {
-							console.log(channel_id);
 							slack.chat.postMessage(channel_id, 
 								obj2.slack.text, {attachments: obj2.slack.attachments}, 
 								function(err, r) {
@@ -243,7 +232,6 @@ server.post('/api/events', function (req, res, next) {
 							var obj3 = end_meeting_dialog(text2, new Date().valueOf());
 							obj3 = {'slack': obj3};
 							
-							console.log(channel_id);
 							slack.chat.postMessage(channel_id, 
 								obj3.slack.text, {attachments: obj3.slack.attachments}, 
 								function(err, r) {
@@ -338,7 +326,7 @@ server.post('/api/events', function (req, res, next) {
 					} else {
 						answer2 = -1;
 					}
-					var decision2 = text.indexOf(':decision:');
+					var decision2 = (text.indexOf(':handshake:') >= 0) || (text.indexOf(':decision:') >= 0);
 		
 					if (info >= 0 || action >= 0 || topic >= 0 || idea >= 0 || 
 							question >= 0 || answer >= 0 || decision >= 0 || tag >= 0 ||
@@ -350,7 +338,6 @@ server.post('/api/events', function (req, res, next) {
 							
 							obj4 = {'slack': obj4};
 							
-							console.log(channel_id);
 							slack.chat.postMessage(channel_id, 
 								obj4.slack.text, {attachments: obj4.slack.attachments}, 
 								function(err, r) {
@@ -374,7 +361,7 @@ server.post('/api/events', function (req, res, next) {
 						} else if (answer >= 0 || answer2 >= 0) {
 							extract_text_command(req.body, '~addanswer', 'answer',  current_summary, 'exclamation');
 						} else if (decision >= 0 || decision2 >= 0) {
-							extract_text_command(req.body, '~adddecision', 'decision',  current_summary, 'decision');
+							extract_text_command(req.body, '~adddecision', 'decision',  current_summary, 'handshake');
 						} else if (tag >= 0) {
 							extract_text_command(req.body, '~addtag', 'tag',  current_summary, null);
 						}
@@ -585,7 +572,6 @@ function remove_plus(obj) {
 }
 
 server.post('/api/actions', function (req, res, next) {
-	console.log(req.body);
 	var payload = decodeURIComponent(req.body);
 	payload = payload.substring(8,payload.length);
 	
@@ -1226,7 +1212,7 @@ var start_instructions = "Write notes or add emojis to existing messages:\n" +
 		"•*Idea*: Type `/~addidea`, or add :bulb:\n" +
 		"•*Question*: Type `/~addquestion`, or add :question:\n" +
 		"•*Answer*: Type `/~addanswer`, or add :exclamation:\n" +
-		"•*Decision*: Type `/~adddecision`, or add :decision:\n" +
+		"•*Decision*: Type `/~adddecision`, or add :handshake:\n" +
 		"•*Tag*: Add your own tag using `/~addtag`\n" +
 		"`/~end`, or :end: ends the conversation and creates a summary.\n\n" + 
 		"_Tilda is a research project by Microsoft. By using Tilda, you agree to our <https://www.microsoft.com/en-us/servicesagreement/|Terms of Use> and" +
@@ -1327,7 +1313,7 @@ server.post('/api/commands', function (req, res, next) {
 			text = '<@' + user + '> added answer :exclamation:';
 			id = 'answer';
 		} else if (args.command.indexOf('~adddecision') !== -1) {
-			text = '<@' + user + '> added decision :decision:';
+			text = '<@' + user + '> added decision :handshake:';
 			id = 'decision';
 		} else if (args.command.indexOf('~end') !== -1) {
 			text = "Ended conversation :end:   :small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle::small_red_triangle:";
@@ -1776,7 +1762,6 @@ function teamdomain_to_id(team_id, team_domain) {
 function post_proactive_dialog_action(args) {
 	try {
 	var possible_emojis = ['start', 'end','information_source', 'boom', 'top', 'question', 'exclamation', 'bulb', 'handshake'];
-	console.log(args);
 	
 	if (args.event.type == "reaction_added" && possible_emojis.indexOf(args.event.reaction) >= 0) {
 		var channel_id = args.event.item.channel;
@@ -1855,7 +1840,7 @@ function add_to_old_summary(summary, args) {
 			args.event.reaction == "question" ||
 			args.event.reaction == "exclamation" ||
 			args.event.reaction == "bulb" ||
-			args.event.reaction == "decision") {
+			args.event.reaction == "handshake") {
 	
 	DB.collection("oauthtokens").findOne({
 		'team_id': team_id,
@@ -1974,7 +1959,7 @@ function add_to_current_summary(args, summary) {
 			args.event.reaction == "question" ||
 			args.event.reaction == "exclamation" ||
 			args.event.reaction == "bulb" ||
-			args.event.reaction == "decision" ||
+			args.event.reaction == "handshake" ||
 			args.event.reaction == "end") {
 		
 		var channel_id = args.event.item.channel;
@@ -2038,7 +2023,7 @@ function add_curr(result2, args, summary, r3, err2, channel_id, team_id) {
 				args.event.reaction == "question" ||
 				args.event.reaction == "exclamation" ||
 				args.event.reaction == "bulb" ||
-				args.event.reaction == "decision") {
+				args.event.reaction == "handshake") {
 			var item = emojis[args.event.reaction];
 			
 			var found = false;
@@ -2205,7 +2190,7 @@ function add_item_dialog_card(summary, id, text, message_text, old, msg_time) {
 		}
 		for (i=0;i<summary.decision.length;i++) {
 			if (summary.decision[i].text != message_text) {
-				o = {'text': ':decision: ' + summary.decision[i].text,
+				o = {'text': ':handshake: ' + summary.decision[i].text,
 						'value': 'decision_' + summary.decision[i].id,
 						'time': new Date(parseFloat(summary.decision[i].id)*1000.0)};
 				options.push(o);
@@ -2343,7 +2328,7 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 		new_text = new_text.replace(':question:', ' ');
 		new_text = new_text.replace(':answer:', ' ');
 		new_text = new_text.replace(':exclamation:', ' ');
-		new_text = new_text.replace(':decision:', ' ');
+		new_text = new_text.replace(':handshake:', ' ');
 		new_text = new_text.replace(':top:', ' ');
 		new_text = new_text.replace(':topic:', ' ');
 		new_text = new_text.replace(/^\s+|\s+$/g, '');
@@ -2387,7 +2372,6 @@ function extract_text_command(session, command, name, current_summary, emoji) {
 				
 			
 				
-			console.log(channel_id);
 			slack.chat.postMessage(channel_id, 
 				obj.text, {attachments: obj.attachments}, 
 				function(err, r) {
@@ -3031,7 +3015,7 @@ function create_card_expandable(current_summary, team_domain, expand, partial, r
     category_count += ret[2];
 
 	ret = create_card_obj(category_count, current_summary, result.slack.attachments, 
-    		current_summary.decision, 'Decision', '#FFA500', 'decision', 
+    		current_summary.decision, 'Decision', '#FFA500', 'handshake', 
     		team_domain, current_summary.channel_id, expand);
 	curr_count += ret[0];
     expandable = expandable || ret[1];
