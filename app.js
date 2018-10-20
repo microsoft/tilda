@@ -2825,6 +2825,7 @@ function create_card_notes(current_summary, attachment_list, all_notes, team_dom
 		var str2 = '';
 		
 		var id_r = all_notes[i].id;
+		id_r = id_r.replace(/\./g,'')
 		if (!prev_type || prev_type != all_notes[i].type) {
 			str2 += '<https://' + team_domain + '.slack.com/archives/' + channel_id + 
 			'/p' + id_r + '|' + all_notes[i].type.charAt(0).toUpperCase() + all_notes[i].type.slice(1) + '>: ';
@@ -2890,6 +2891,7 @@ function add_answer_to_question_chron(channel_id, team_domain, str, answer_link,
 				if (summary[b[0]][i].id == b[1]) {
 					str += '>';
 					var id_r = summary[b[0]][i].id;
+					id_r = id_r.replace(/\./g,'')
 					str += '<https://' + team_domain + '.slack.com/archives/' + channel_id + 
 					'/p' + id_r + '|' + b[0].charAt(0).toUpperCase() + b[0].slice(1) + '>: ';
 					
