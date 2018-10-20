@@ -2471,6 +2471,7 @@ function add_answer_to_question(count, channel_id, team_domain, str, answer_link
 			if (summary[b[0]][i].id == b[1]) {
 				str += '>';
 				var id_r = summary[b[0]][i].id;
+				id_r = id_r.replace(/\./g,'')
 				str += '<https://' + team_domain + '.slack.com/archives/' + channel_id + 
 				'/p' + id_r + '|' + b[0].charAt(0).toUpperCase() + b[0].slice(1) + '>: ';
 				
@@ -2543,6 +2544,7 @@ function create_card_obj(category_count, summary, attachment_list, type_list, na
 				
 				str += type_list[i].text + ', ';
 				var id_r = type_list[i].id;
+				id_r = id_r.replace(/\./g,'')
 				str2 += '<https://' + team_domain + '.slack.com/archives/' + channel_id + 
 				'/p' + id_r + '|' + (i+1) + '>. ';
 				
