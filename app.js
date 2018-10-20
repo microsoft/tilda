@@ -327,6 +327,11 @@ server.post('/api/events', function (req, res, next) {
 						answer2 = -1;
 					}
 					var decision2 = (text.indexOf(':handshake:') >= 0) || (text.indexOf(':decision:') >= 0);
+					if (decision2) {
+						decision2 = 0;
+					} else {
+						decision2 = -1;
+					}
 		
 					if (info >= 0 || action >= 0 || topic >= 0 || idea >= 0 || 
 							question >= 0 || answer >= 0 || decision >= 0 || tag >= 0 ||
