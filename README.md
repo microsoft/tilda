@@ -13,7 +13,13 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
+# Instructions to Run the Hosted Version
+
+If you just want to try out Tilda or use it in your existing Slack team, you can simply use the existing hosted version of Tilda located at [https://tildachat.com](https://tildachat.com). 
+
 # Installation Instructions
+
+Follow these instructions for developing and deploying your own version of Tilda.
 
 ## Get Slack API Credentials
 
