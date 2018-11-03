@@ -13,13 +13,17 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-# Running the Hosted Version of Tilda
+# About
 
-If you just want to try out Tilda or use it in your existing Slack team, you can simply use the existing hosted version of Tilda located at [https://tildachat.com](https://tildachat.com). 
+Tilda is a research project studying team collaboration over group chat. The Tilda software allows teams to create collaborative summaries of the important parts of their chats, which makes it easier for people to catch up on missed conversations. You can read more about our research in our [2018 CSCW publication](https://www.microsoft.com/en-us/research/publication/making-sense-of-group-chat-through-collaborative-tagging-and-summarization/).
+
+# Using the Hosted Version of Tilda
+
+If you just want use Tilda in your own Slack team, and don't want to go through the steps of deploying it yourself, there is a hosted version run by MIT located at [https://tildachat.com](https://tildachat.com). Follow the instructions on that site to get started.
 
 # Developing and Deploying your own Tilda
 
-Follow these instructions for developing and deploying your own version of Tilda.
+If you'd like to deploy and host your own Tilda, follow these instructions.
 
 ## Get Slack API Credentials
 
