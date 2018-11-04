@@ -65,18 +65,19 @@ server.get('/api/oauth', function (req, res, next) {
 					DB.collection("oauthtokens").update(
 							{team_id: result.team_id},
 							result, {upsert: true});
-					var text = "<html><body>Success!";
-					text += '<P>Tilda is a research project by Microsoft. By using Tilda, you agree to our <a href="https://www.microsoft.com/en-us/servicesagreement/">Terms of Use</a> and';
-					text += ' <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy Statement</a>. For more info, contact us at: PrivCon_TnR@microsoft.com.</P>';
-					text += '</body></html>';
+					//var text = "<html><body>Success!";
+					//text += '<P>Tilda is a research project by Microsoft. By using Tilda, you agree to our <a href="https://www.microsoft.com/en-us/servicesagreement/">Terms of Use</a> and';
+					//text += ' <a href="https://privacy.microsoft.com/en-us/privacystatement">Privacy Statement</a>. For more info, contact us at: PrivCon_TnR@microsoft.com.</P>';
+					//text += '</body></html>';
 					
-					res.writeHead(200, {
-						'Content-Length': Buffer.byteLength(text),
-						'Content-Type': 'text/html'
-					});
-					res.write(text);
-					res.end();
-					next();
+					//res.writeHead(200, {
+					//	'Content-Length': Buffer.byteLength(text),
+					//	'Content-Type': 'text/html'
+					//});
+					//res.write(text);
+					//res.end();
+					//next();
+					res.redirect('https://tildachat.com/instructions.html', next);
 				}
 			});
 	
