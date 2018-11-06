@@ -153,6 +153,8 @@ server.post('/api/events', function (req, res, next) {
 	} else if (req.body.event.type == "message") {
 		try {
 		
+		console.log(req.body.event);
+		
 		if (!req.body.event.subtype) {
 		
 		var channel_id = req.body.event.channel;
