@@ -103,51 +103,51 @@ server.post('/api/events', function (req, res, next) {
 		var team_id = req.body.team_id;
 
 							
-							DB.collection("currentsummary").findOne({channel_id: channel_id},
-									function(err, r2) {
-										if (!err) {
-											
-											DB.collection("oauthtokens").findOne({
-												'team_id': team_id,
-												}, function(e3, r3) {
-													if (!e3) {
-														if (r3) {
-															slack = new SlackClient(r3.access_token);
-															
-															if (channel_id.startsWith('C')) {
-																slack.channels.history(
-																	channel_id,
-																	{oldest: req.body.event.item.message.ts,
-																	 count: 15,	
-																	},
-																	function(err2, result2) {
-																		send_star(err2, result2, r2, req, channel_id)
-																	});
-															
-															} else if (channel_id.startsWith('G')) {
-																slack.groups.history(
-																		channel_id,
-																		{oldest: req.body.event.item.message.ts,
-																		 count: 15,	
-																		},
-																		function(err2, result2) {
-																			send_star(err2, result2, r2, req, channel_id)
-																		});
-																	
-															} else if (channel_id.startsWith('D')) {
-																slack.im.history(
-																		channel_id,
-																		{oldest: req.body.event.item.message.ts,
-																		 count: 15,	
-																		},
-																		function(err2, result2) {
-																			send_star(err2, result2, r2, req, channel_id)
-																		});
-																	
-															}
-														}}});
-										}});
-	
+							// DB.collection("currentsummary").findOne({channel_id: channel_id},
+// 									function(err, r2) {
+// 										if (!err) {
+// 											
+// 											DB.collection("oauthtokens").findOne({
+// 												'team_id': team_id,
+// 												}, function(e3, r3) {
+// 													if (!e3) {
+// 														if (r3) {
+// 															slack = new SlackClient(r3.access_token);
+// 															
+// 															if (channel_id.startsWith('C')) {
+// 																slack.channels.history(
+// 																	channel_id,
+// 																	{oldest: req.body.event.item.message.ts,
+// 																	 count: 15,	
+// 																	},
+// 																	function(err2, result2) {
+// 																		send_star(err2, result2, r2, req, channel_id)
+// 																	});
+// 															
+// 															} else if (channel_id.startsWith('G')) {
+// 																slack.groups.history(
+// 																		channel_id,
+// 																		{oldest: req.body.event.item.message.ts,
+// 																		 count: 15,	
+// 																		},
+// 																		function(err2, result2) {
+// 																			send_star(err2, result2, r2, req, channel_id)
+// 																		});
+// 																	
+// 															} else if (channel_id.startsWith('D')) {
+// 																slack.im.history(
+// 																		channel_id,
+// 																		{oldest: req.body.event.item.message.ts,
+// 																		 count: 15,	
+// 																		},
+// 																		function(err2, result2) {
+// 																			send_star(err2, result2, r2, req, channel_id)
+// 																		});
+// 																	
+// 															}
+// 														}}});
+// 										}});
+// 	
 		res.json(req.body);
 		next();
 	} else if (req.body.event.type == "message") {
